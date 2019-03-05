@@ -23,12 +23,6 @@ convert02
   -> List { name : String, email : String}
 convert02 xs =
   let
-    appendIfNonEmpty i a =
-      case i of
-        Just x ->
-          a ++ [x]
-        Nothing ->
-          a
     toMaybe {name, email} =
       case (name, email) of
         (Just a, Just b) ->
@@ -38,7 +32,7 @@ convert02 xs =
   in
     xs
       |> List.map toMaybe
-      |> List.foldl appendIfNonEmpty []
+      |> catMaybes
 
 -- Fill in missing emails with <unspecified>, while removing elements with no name
 -- > convert03 [{name=Just "John", email=Just "john@gmail.com"}, {name=Just "Jack", email=Nothing}, {name=Nothing, email=Just "hello@world.com"}]
@@ -48,20 +42,6 @@ convert03
   -> List { name : String, email : String} 
 convert03 xs =
   let
-    appendIfNonEmpty i a =
-      case i of
-        Just x ->
-          a ++ [x]
-        Nothing ->
-          a
-
-    toMaybe {name, email} =
-      case (name, email) of
-        (Just a, Just b) ->
-          Just { name = a, email = b }
-        (_, _) ->
-          Nothing
-
     withMarkedEmail a =
       if a.email == Nothing then
         { a | email = Just "<unspecified>" }
@@ -70,9 +50,7 @@ convert03 xs =
   in
     xs
       |> List.map withMarkedEmail
-      |> List.map toMaybe
-      |> List.foldl appendIfNonEmpty []
-
+      |> convert02
 
 -- Rewrite bird using <|, then using |> instead of parens (where applicable)
 bird : Int
@@ -131,10 +109,10 @@ setPhone phone user =
   in
       { user | profile = { profile | address = { address | phone = phone } } }
 
--- > mapMaybes (\x -> if x == Just 3 then x else Just 4) [Just 1, Nothing, Just 3]
--- [4,4,3] : List number
--- mapMaybes : (a -> Maybe b) -> List a -> List b
-mapMaybes f xs =
+-- > catMaybes [Just 1, Nothing, Just 3]
+-- [1,3] : List number
+catMaybes : List (Maybe a) -> List a
+catMaybes xs =
   let appendIfNonEmpty i a =
         case i of
           Just x ->
@@ -142,4 +120,10 @@ mapMaybes f xs =
           Nothing ->
             a
   in
-        List.map f xs |> List.foldl appendIfNonEmpty []
+        List.foldl appendIfNonEmpty [] xs
+
+
+-- > mapMaybes (\x -> if x == Just 3 then x else Just 4) [Just 1, Nothing, Just 3]
+-- [4,4,3] : List number
+-- mapMaybes : (a -> Maybe b) -> List a -> List b
+mapMaybes f xs = List.map f xs |> catMaybes
