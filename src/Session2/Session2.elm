@@ -72,3 +72,45 @@ convert03 xs =
       |> List.map withMarkedEmail
       |> List.map toMaybe
       |> List.foldl appendIfNonEmpty []
+
+
+-- Rewrite bird using <|, then using |> instead of parens (where applicable)
+bird : Int
+bird =
+    let
+        notThree x =
+            x /= 3
+
+        incr x =
+            x + 1
+    in
+    List.sum (List.filter notThree (List.map incr [ 1, 2, 3 ]))
+
+-- using <|
+bird2 : Int
+bird2 =
+    let
+        notThree x =
+            x /= 3
+
+        incr x =
+            x + 1
+    in
+        List.sum
+            <| List.filter notThree
+            <| List.map incr
+            <| [ 1, 2, 3 ]
+
+-- using |>
+bird3 =
+    let
+        notThree x =
+            x /= 3
+
+        incr x =
+            x + 1
+    in
+        [1, 2, 3]
+            |> List.map incr
+            |> List.filter notThree
+            |> List.sum
