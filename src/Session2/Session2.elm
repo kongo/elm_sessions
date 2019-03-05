@@ -114,3 +114,19 @@ bird3 =
             |> List.map incr
             |> List.filter notThree
             |> List.sum
+
+
+-- Implement setPhone
+-- > setPhone "+123456" { profile = { address = { phone = "+654321" } } }
+-- { profile = { address = { phone = "+123456" } } }
+type alias User = { profile : Profile }
+type alias Profile = { address : Address }
+type alias Address = { phone : String }
+
+setPhone : String -> User -> User
+setPhone phone user =
+  let
+    profile = user.profile
+    address = profile.address
+  in
+    { user | profile = { profile | address = { address | phone = phone } } }
