@@ -39,3 +39,36 @@ convert02 xs =
     xs
       |> List.map toMaybe
       |> List.foldl appendIfNonEmpty []
+
+-- Fill in missing emails with <unspecified>, while removing elements with no name
+-- > convert03 [{name=Just "John", email=Just "john@gmail.com"}, {name=Just "Jack", email=Nothing}, {name=Nothing, email=Just "hello@world.com"}]
+-- [{name="John", email="john@gmail.com"}, {name="Jack", email="<unspecified>"}]
+convert03 
+  : List { name : Maybe String, email : Maybe String} 
+  -> List { name : String, email : String} 
+convert03 xs =
+  let
+    appendIfNonEmpty i a =
+      case i of
+        Just x ->
+          a ++ [x]
+        Nothing ->
+          a
+
+    toMaybe {name, email} =
+      case (name, email) of
+        (Just a, Just b) ->
+          Just { name = a, email = b }
+        (_, _) ->
+          Nothing
+
+    withMarkedEmail a =
+      if a.email == Nothing then
+        { a | email = Just "<unspecified>" }
+      else
+        a
+  in
+    xs
+      |> List.map withMarkedEmail
+      |> List.map toMaybe
+      |> List.foldl appendIfNonEmpty []
