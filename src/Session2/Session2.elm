@@ -126,7 +126,20 @@ type alias Address = { phone : String }
 setPhone : String -> User -> User
 setPhone phone user =
   let
-    profile = user.profile
-    address = profile.address
+      profile = user.profile
+      address = profile.address
   in
-    { user | profile = { profile | address = { address | phone = phone } } }
+      { user | profile = { profile | address = { address | phone = phone } } }
+
+-- > mapMaybes (\x -> if x == Just 3 then x else Just 4) [Just 1, Nothing, Just 3]
+-- [4,4,3] : List number
+-- mapMaybes : (a -> Maybe b) -> List a -> List b
+mapMaybes f xs =
+  let appendIfNonEmpty i a =
+        case i of
+          Just x ->
+            a ++ [x]
+          Nothing ->
+            a
+  in
+        List.map f xs |> List.foldl appendIfNonEmpty []
