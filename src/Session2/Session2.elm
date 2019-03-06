@@ -143,20 +143,21 @@ mapMaybes f xs = List.map f xs |> catMaybes
 buildStatsUrl : Int -> { startDate : Maybe String, numElems : Maybe Int } -> String
 buildStatsUrl itemId ps =
   let
+    listWithStartDate {startDate, numElems} list =
+      listWithParam "startDate" startDate Url.Builder.string list
+
+    listWithNumElems {startDate, numElems} list =
+      listWithParam "numElems" numElems Url.Builder.int list
+
+    listWithParam paramName paramValue paramConstructor list =
+      case paramValue of
+        Nothing ->
+          list
+        Just a ->
+          (paramConstructor paramName a) :: list
+
     params = [] |> listWithStartDate ps |> listWithNumElems ps
   in
-    Url.Builder.absolute ["api", "item", String.fromInt itemId] params
+    "https://myapi.com" ++
+      Url.Builder.absolute ["api", "item", String.fromInt itemId, "stats.json"] params
 
-listWithStartDate {startDate, numElems} list =
-  case startDate of
-    Nothing ->
-      list
-    Just a ->
-      (Url.Builder.string "startDate" a) :: list
-
-listWithNumElems {startDate, numElems} list =
-  case numElems of
-    Nothing ->
-      list
-    Just a ->
-      (Url.Builder.int "numElems" a) :: list
