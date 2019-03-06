@@ -7,10 +7,10 @@ import Html.Attributes exposing (..)
 
 
 type alias Model =
-    { c : String, f : String }
+    { c : Maybe Float, f : Maybe Float }
 
 initialModel =
-    { c = "", f = ""}
+    { c = Nothing, f = Nothing }
 
 type Msg =
     CelsiusUpdated String
@@ -19,41 +19,53 @@ type Msg =
 celsiusToFarenheit c = c * 9 / 5 + 32
 farenheitToCelsius f = (f - 32) * (5/9)
 
-inputToOutput converter s =
+convertInputData converter s =
   case String.toFloat s of
     Nothing ->
-      ""
+      Nothing
     Just a ->
-      a |> converter |> String.fromFloat
+      Just (converter a)
 
 update : Msg -> Model -> Model
 update msg model =
   case msg of
     CelsiusUpdated s ->
-      { model | c = s, f = inputToOutput celsiusToFarenheit s }
+      { model | c = String.toFloat(s), f = convertInputData celsiusToFarenheit s }
     FarenheitUpdated s ->
-      { model | f = s, c = inputToOutput farenheitToCelsius s }
+      { model | f = String.toFloat(s), c = convertInputData farenheitToCelsius s }
+
+decorateModel model =
+    let
+        decorateMaybeFloat x =
+            case x of
+              Nothing -> ""
+              Just y -> String.fromFloat y
+    in
+        { c = decorateMaybeFloat model.c, f = decorateMaybeFloat model.f }
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ input
-          [ type_ "text"
-          , autocomplete False
-          , value model.c
-          , onInput CelsiusUpdated
-          ]
-          []
-        , text " Celsius = "
-        , input
-          [ type_ "text"
-          , autocomplete False
-          , value model.f
-          , onInput FarenheitUpdated
-          ]
-          []
-        , text " Farenheit"
-        ]
+    let
+        decoratedModel = decorateModel model
+    in
+        div []
+            [ input
+              [ type_ "text"
+              , autocomplete False
+              , value decoratedModel.c
+              , onInput CelsiusUpdated
+              ]
+              []
+            , text " Celsius = "
+            , input
+              [ type_ "text"
+              , autocomplete False
+              , value decoratedModel.f
+              , onInput FarenheitUpdated
+              ]
+              []
+            , text " Farenheit"
+            ]
 
 
 main : Program () Model Msg
