@@ -1,6 +1,7 @@
 module Session2.Session2 exposing(..)
 
 import String
+import Url.Builder exposing(..)
 
 -- Map one structure to another
 -- > convert [{name="John", email="john@gmail.com", phone_number="+3801234567"}]
@@ -127,3 +128,35 @@ catMaybes xs =
 -- [4,4,3] : List number
 -- mapMaybes : (a -> Maybe b) -> List a -> List b
 mapMaybes f xs = List.map f xs |> catMaybes
+
+
+-- Use package elm/url and its Url.Builder.absolute to build URL from parameters
+
+-- > buildStatsUrl 12 {startDate=Nothing, numElems=Nothing}
+-- https://myapi.com/api/item/12/stats.json
+
+-- > buildStatsUrl 12 {startDate=Just "2019-01-01", numElems=Nothing}
+-- https://myapi.com/api/item/12/stats.json?start_date=2019-01-01
+
+-- > buildStatsUrl 12 {startDate=Just "2019-01-01", numElems=Just 10}
+-- https://myapi.com/api/item/12/stats.json?start_date=2019-01-01&num_items=10
+buildStatsUrl : Int -> { startDate : Maybe String, numElems : Maybe Int } -> String
+buildStatsUrl itemId ps =
+  let
+    params = [] |> listWithStartDate ps |> listWithNumElems ps
+  in
+    Url.Builder.absolute ["api", "item", String.fromInt itemId] params
+
+listWithStartDate {startDate, numElems} list =
+  case startDate of
+    Nothing ->
+      list
+    Just a ->
+      (Url.Builder.string "startDate" a) :: list
+
+listWithNumElems {startDate, numElems} list =
+  case numElems of
+    Nothing ->
+      list
+    Just a ->
+      (Url.Builder.int "numElems" a) :: list
