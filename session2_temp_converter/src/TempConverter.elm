@@ -1,8 +1,8 @@
 module Main exposing (main)
 
 import Browser
-import Html exposing (Html, button, div, text, input)
-import Html.Events exposing (onClick, onInput)
+import Html exposing (Html, div, text, input)
+import Html.Events exposing (onInput)
 import Html.Attributes exposing (..)
 
 
