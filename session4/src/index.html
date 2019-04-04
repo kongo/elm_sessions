@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Main</title>
+        <!-- <link rel="stylesheet" href="whatever&#45;you&#45;want.css"> -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="main.js"></script>
+        <style>
+select {
+    height: 10em;
+    width: 100%;
+}
+        </style>
+    </head>
+    <body>
+
+        <div class="container border">
+            <div id="elm-node">
+                <div class="row">
+                    <div class="col-2">
+                        Filter prefix:
+                    </div>
+                    <div class="col-3">
+                        <input type="text" />
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-3">
+                        <select multiple="multiple">
+                            <option>Foo</option>
+                            <option>Bar</option>
+                            <option>Baz</option>
+                        </select>
+                    </div>
+
+                    <div class="col-3">
+                        <div class="row">
+                            <div class="col-3">Name:</div>
+                            <div class="col-3"><input type="text" /></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-3">Surname:</div>
+                            <div class="col-3"><input type="text" /></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-2">
+                        <input type="button" value="Create" />
+                    </div>
+                    <div class="col-2">
+                        <input type="button" value="Update" />
+                    </div>
+                    <div class="col-2">
+                        <input type="button" value="Delete" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <script>
+Elm.Main.init({
+    node: document.getElementById("elm-node")
+})
+        </script>
+    </body>
+</html>
